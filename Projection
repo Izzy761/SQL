@@ -1,0 +1,14 @@
+declare
+	@count float = 500;	
+
+	declare @monthend date = DATEADD(s,-1,DATEADD(mm, DATEDIFF(m,0,GETDATE())+1,0))
+	,@monthstart date = DATEADD(mm, DATEDIFF(mm, 0, GETDATE()) , 0)
+
+	SELECT @count , '/' ,@monthstart,@monthend,
+	@count/
+	((DATEDIFF(dd, @monthstart, GETDATE()) + 1) - (DATEDIFF(wk, @monthstart, GETDATE()) * 2) -
+    (CASE WHEN DATENAME(dw, @monthstart) = 'Sunday' THEN 1 ELSE 0 END) -(CASE WHEN DATENAME(dw, GETDATE()) = 'Saturday' THEN 1 ELSE 0 END))
+	* (((DATEDIFF(dd, @monthstart, @monthend) + 1) - (DATEDIFF(wk, @monthstart, @monthend) * 2) -
+    (CASE WHEN DATENAME(dw, @monthstart) = 'Sunday' THEN 1 ELSE 0 END) -(CASE WHEN DATENAME(dw, @monthend) = 'Saturday' THEN 1 ELSE 0 END)) -
+	((DATEDIFF(dd, @monthstart, GETDATE()) + 1) - (DATEDIFF(wk, @monthstart, GETDATE()) * 2) -
+    (CASE WHEN DATENAME(dw, @monthstart) = 'Sunday' THEN 1 ELSE 0 END) -(CASE WHEN DATENAME(dw, GETDATE()) = 'Saturday' THEN 1 ELSE 0 END)))+ @count
